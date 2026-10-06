@@ -1,0 +1,991 @@
+<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Find the right streaming services for you, and step by step help setting them up. From InfoWest.">
+<title>Streaming Finder</title>
+<meta name="theme-color" content="#005187">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Streaming Finder">
+<meta name="apple-mobile-web-app-status-bar-style" content="default"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --orient: #005187;
+    --midnight: #003366;
+    --amber: #FFC10E;
+    --amber-soft: #FFF4D1;
+    --blue-soft: #E6F0F7;
+    --ground: #F3F6F9;
+    --paper: #FFFFFF;
+    --ink: #111111;
+    --muted: #4A4F55;
+    --line: #C9D3DC;
+    --free: #1C6B3A;
+    --free-soft: #E3F2E8;
+  }
+  * { box-sizing: border-box; }
+  html { font-size: 20px; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: Lato, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.55;
+    padding-inline: 16px;
+    padding-block: 0 48px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 24px; }
+  header.brand {
+    background: var(--paper);
+    border-bottom: 5px solid var(--amber);
+    margin-inline: -16px;
+    padding: 16px;
+    display: flex; justify-content: center;
+  }
+  header.brand img { width: 170px; height: auto; display: block; }
+  h1, h2, h3 { font-weight: 900; color: var(--orient); text-wrap: balance; margin: 0; line-height: 1.2; }
+  h1 { font-size: 1.9rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.2rem; }
+  p { margin: 0; max-width: 62ch; }
+  .panel {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px 24px;
+    display: grid; gap: 20px;
+  }
+  .lead { font-size: 1.1rem; }
+  .muted { color: var(--muted); }
+  .facts { display: grid; gap: 12px; padding: 0; margin: 0; list-style: none; }
+  .facts li { display: flex; gap: 12px; align-items: flex-start; }
+  .facts li::before {
+    content: ""; flex: 0 0 14px; height: 14px; margin-top: 8px;
+    border-radius: 50%; background: var(--amber); border: 2px solid var(--orient);
+  }
+  button { font: inherit; cursor: pointer; }
+  .btn {
+    min-height: 64px; padding: 14px 28px; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 900; border: 3px solid transparent;
+  }
+  .btn-go { background: var(--amber); color: var(--ink); border-color: #D9A200; }
+  .btn-go:hover { background: #FFCD3C; }
+  .btn-go:disabled { background: #E5E5E5; color: #6B6B6B; border-color: #CFCFCF; cursor: not-allowed; }
+  .btn-back { background: var(--paper); color: var(--orient); border-color: var(--orient); }
+  .btn-back:hover { background: var(--blue-soft); }
+  .btn:focus-visible, .opt:focus-visible, select:focus-visible, summary:focus-visible {
+    outline: 4px solid var(--midnight); outline-offset: 3px;
+  }
+  .row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .row.split { justify-content: space-between; }
+
+  .progress { display: grid; gap: 8px; }
+  .progress-label { font-weight: 700; color: var(--orient); }
+  .bar { height: 14px; border-radius: 7px; background: var(--blue-soft); overflow: hidden; border: 1px solid var(--line); }
+  .bar span { display: block; height: 100%; background: var(--orient); transition: width .3s; }
+
+  .hint {
+    display: inline-block; background: var(--amber-soft); border: 2px solid var(--amber);
+    border-radius: 8px; padding: 4px 12px; font-weight: 700; font-size: .95rem;
+  }
+  .opts { display: grid; gap: 12px; }
+  .opt {
+    display: flex; gap: 16px; align-items: center; text-align: left;
+    min-height: 72px; padding: 14px 18px; width: 100%;
+    background: var(--paper); color: var(--ink);
+    border: 3px solid var(--line); border-radius: 12px;
+    font-size: 1.05rem;
+  }
+  .opt:hover { border-color: var(--orient); }
+  .opt .mark {
+    flex: 0 0 36px; height: 36px; border: 3px solid var(--orient);
+    display: grid; place-items: center; background: var(--paper);
+  }
+  .opt.multi .mark { border-radius: 8px; }
+  .opt.single .mark { border-radius: 50%; }
+  .opt .mark svg { width: 22px; height: 22px; visibility: hidden; }
+  .opt[aria-pressed="true"] { border-color: var(--orient); background: var(--blue-soft); }
+  .opt[aria-pressed="true"] .mark { background: var(--orient); }
+  .opt[aria-pressed="true"] .mark svg { visibility: visible; }
+  .opt b { display: block; font-weight: 700; }
+  .opt small { display: block; color: var(--muted); font-size: .9rem; line-height: 1.4; }
+
+  /* Results */
+  .picks { display: grid; gap: 20px; }
+  .pick {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+    border-top: 8px solid var(--orient); padding: 24px; display: grid; gap: 14px;
+  }
+  .pick.free { border-top-color: var(--free); }
+  .pick-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: baseline; justify-content: space-between; }
+  .price { font-weight: 900; font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+  .tag {
+    display: inline-block; padding: 2px 12px; border-radius: 999px; font-size: .85rem; font-weight: 700;
+    letter-spacing: .04em; text-transform: uppercase;
+  }
+  .tag.free { background: var(--free-soft); color: var(--free); }
+  .tag.paid { background: var(--blue-soft); color: var(--orient); }
+  .tag.have { background: var(--amber-soft); color: #6B4E00; }
+  .why { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+  .total {
+    background: var(--midnight); color: #fff; border-radius: 14px; padding: 22px 24px;
+    display: grid; gap: 8px;
+  }
+  .total h2 { color: var(--amber); }
+  .total p { color: #fff; }
+  .total .big { font-size: 1.5rem; font-weight: 900; font-variant-numeric: tabular-nums; }
+
+  .setup { display: grid; gap: 16px; }
+  label.devlabel { font-weight: 700; display: block; margin-bottom: 8px; }
+  select {
+    font: inherit; font-size: 1.05rem; min-height: 60px; width: 100%; max-width: 480px;
+    border: 3px solid var(--orient); border-radius: 10px; padding: 8px 12px; background: var(--paper); color: var(--ink);
+  }
+  details {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+  }
+  summary {
+    list-style: none; cursor: pointer; padding: 20px 24px; min-height: 72px;
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    font-weight: 900; font-size: 1.15rem; color: var(--orient);
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary .chev {
+    flex: 0 0 auto; font-size: .9rem; font-weight: 700; color: var(--ink);
+    background: var(--amber); border-radius: 8px; padding: 4px 12px;
+  }
+  details[open] summary { border-bottom: 1px solid var(--line); background: var(--blue-soft); }
+  details[open] summary .chev::after { content: "Hide steps"; }
+  details:not([open]) summary .chev::after { content: "Show steps"; }
+  .steps-body { padding: 20px 24px 24px; display: grid; gap: 18px; }
+  .phase { font-weight: 900; color: var(--midnight); font-size: 1.05rem; }
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: grid; gap: 14px; }
+  ol.steps li { counter-increment: s; display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; }
+  ol.steps li::before {
+    content: counter(s); width: 44px; height: 44px; border-radius: 50%;
+    background: var(--orient); color: #fff; font-weight: 900; display: grid; place-items: center;
+  }
+  .web { font-weight: 700; color: var(--orient); word-break: break-word; }
+  .note {
+    background: var(--amber-soft); border-left: 6px solid var(--amber); border-radius: 8px;
+    padding: 14px 16px; display: grid; gap: 6px;
+  }
+  .note strong { color: #5A4200; }
+  .safety { display: grid; gap: 10px; }
+  .contact {
+    background: var(--paper); border: 3px solid var(--amber); border-radius: 14px; padding: 22px 24px;
+    display: grid; gap: 6px;
+  }
+  .contact .phone { font-size: 1.5rem; font-weight: 900; color: var(--orient); font-variant-numeric: tabular-nums; user-select: all; }
+  footer { text-align: center; color: var(--muted); font-size: .85rem; display: grid; gap: 4px; }
+  @media (max-width: 520px) {
+    html { font-size: 18px; }
+    .panel, .pick { padding: 22px 18px; }
+    .row .btn { flex: 1 1 100%; }
+    .row.split { flex-direction: column-reverse; align-items: stretch; }
+  }
+
+  nav.tabs {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    max-width: 760px; margin: 20px auto 0;
+  }
+  .tab {
+    min-height: 64px; padding: 10px 14px; border-radius: 12px; font-weight: 900; font-size: 1.05rem;
+    background: var(--paper); color: var(--orient); border: 3px solid var(--orient);
+  }
+  .tab[aria-current="page"] { background: var(--orient); color: #fff; }
+  .tab:focus-visible, .chip:focus-visible { outline: 4px solid var(--amber); outline-offset: 3px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip {
+    min-height: 52px; padding: 8px 18px; border-radius: 999px; font-weight: 700; font-size: 1rem;
+    background: var(--paper); color: var(--ink); border: 3px solid var(--line);
+  }
+  .chip:hover { border-color: var(--orient); }
+  .chip[aria-pressed="true"] { background: var(--orient); color: #fff; border-color: var(--orient); }
+  .count { font-weight: 700; margin-top: -8px; }
+  .fa-head { display: grid; gap: 6px; }
+  .fa-name { font-weight: 900; color: var(--orient); font-size: 1.15rem; }
+  .fa-what { font-weight: 400; color: var(--ink); font-size: .95rem; line-height: 1.45; }
+  .fa-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag.acct { background: #EEF0F2; color: var(--muted); text-transform: none; letter-spacing: 0; }
+  .tag.only { background: var(--amber-soft); color: #6B4E00; text-transform: none; letter-spacing: 0; }
+  details.freeapp summary { align-items: flex-start; }
+  .linkbtn { background: none; border: 0; padding: 0; color: var(--orient); font-weight: 900; text-decoration: underline; text-underline-offset: 3px; font-size: 1rem; }
+  @media (max-width: 520px) {
+    summary { flex-direction: column; align-items: stretch; }
+    summary .chev { align-self: flex-start; }
+  }
+  @media (prefers-reduced-motion: reduce) { .bar span { transition: none; } }
+
+  /* ===== Mobile and tablet polish ===== */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  button, select, summary, a { touch-action: manipulation; -webkit-tap-highlight-color: rgba(0,81,135,.15); }
+  body {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+    padding-bottom: calc(48px + env(safe-area-inset-bottom));
+  }
+  header.brand { margin-left: calc(-1 * max(16px, env(safe-area-inset-left))); margin-right: calc(-1 * max(16px, env(safe-area-inset-right))); }
+  .contact .phone a { color: inherit; text-decoration: none; }
+  @media (pointer: coarse) { .contact .phone a::after { content: "Tap to call"; display: block; font-size: .8rem; font-weight: 700; color: var(--muted); } }
+  .opt, .chip, .tab, .btn { -webkit-user-select: none; user-select: none; }
+
+  main.wrap { margin-top: 16px; }
+
+  /* Keep Back / Next in reach while answering questions */
+  .panel > .row.split {
+    position: sticky; bottom: 0; z-index: 2;
+    background: var(--paper);
+    margin: 0 -24px -28px; padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line);
+    border-radius: 0 0 14px 14px;
+  }
+
+  @media (max-width: 520px) {
+    header.brand { padding: 10px 16px; border-bottom-width: 4px; }
+    header.brand img { width: 130px; }
+    nav.tabs { margin-top: 14px; gap: 8px; }
+    .tab { min-height: 56px; font-size: .95rem; padding: 8px 10px; }
+    .wrap { gap: 18px; }
+    h1 { font-size: 1.6rem; }
+    .opt { min-height: 64px; padding: 12px 14px; gap: 12px; }
+    .opt .mark { flex-basis: 32px; height: 32px; }
+    /* Side by side on phones: small Back, big Next */
+    .panel > .row.split {
+      flex-direction: row; align-items: stretch; flex-wrap: nowrap; gap: 10px;
+      margin: 0 -18px -22px; padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+    }
+    .panel > .row.split .btn { flex: 1 1 auto; min-height: 60px; padding: 10px 14px; }
+    .panel > .row.split .btn-back { flex: 0 0 auto; }
+  }
+
+  /* Phones turned sideways: less vertical space */
+  @media (max-height: 500px) and (orientation: landscape) {
+    header.brand { padding: 6px 16px; }
+    header.brand img { width: 110px; }
+    .panel > .row.split { position: static; }
+  }
+
+  /* Tablets and up: use the width */
+  @media (min-width: 768px) {
+    .wrap, nav.tabs { max-width: 1040px; }
+    .opts { grid-template-columns: 1fr 1fr; }
+    .picks { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: start; }
+    main > div.setup, #steplist, #alsolist { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    main > div.setup details[open], #steplist details[open], #alsolist details[open] { grid-column: 1 / -1; }
+    .panel > .row.split .btn { min-width: 200px; }
+    main > div.setup details:not([open]) summary, #steplist details:not([open]) summary, #alsolist details:not([open]) summary { flex-direction: column; align-items: stretch; height: 100%; }
+    main > div.setup details:not([open]) summary .chev, #steplist details:not([open]) summary .chev, #alsolist details:not([open]) summary .chev { align-self: flex-start; margin-top: auto; }
+    main > div.setup details, #steplist details, #alsolist details { height: 100%; }
+    main > div.setup, #steplist, #alsolist { align-items: stretch; }
+    .contact, .total { text-align: left; }
+  }
+  @media (min-width: 1200px) {
+    main > div.setup { grid-template-columns: 1fr 1fr 1fr; }
+  }
+</style>
+
+<header class="brand"><img src="data:image/png;base64,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" alt="InfoWest, The Internet People"></header>
+
+<nav class="tabs" aria-label="Sections">
+  <button class="tab" id="tab-quiz" data-view="quiz">Help me choose</button>
+  <button class="tab" id="tab-free" data-view="free">Free TV apps</button>
+</nav>
+
+<main class="wrap" id="app" aria-live="polite"></main>
+
+<footer class="wrap">
+  <span>InfoWest | The Internet People</span>
+  <span>Prices are approximate, checked September 2026, and can change. Always confirm the price on the sign-up page.</span>
+</footer>
+
+<script>
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+const QUESTIONS = [
+  { id: "device", multi: true, title: "What do you watch TV on?",
+    help: "If you have more than one, pick them all. Not sure? That's fine, pick \"I'm not sure.\"",
+    opts: [
+      ["smarttv", "A smart TV", "A newer TV that has apps built in (Samsung, LG, Vizio, and others)"],
+      ["roku", "A Roku box or stick", "Or a TV with \"Roku\" on the front"],
+      ["fire", "An Amazon Fire TV stick", "The remote has a blue Alexa microphone button"],
+      ["googletv", "Google TV or Chromecast", ""],
+      ["appletv", "An Apple TV box", ""],
+      ["tablet", "A phone or tablet", "iPhone, iPad, or Android"],
+      ["computer", "A computer or laptop", ""],
+      ["none", "I'm not sure, or I don't have one yet", "We'll tell you what you need"]
+    ] },
+  { id: "likes", multi: true, title: "What do you like to watch?",
+    help: "Pick everything you enjoy.",
+    opts: [
+      ["classic", "Classic TV shows and old movies", "Westerns, sitcoms, black and white films"],
+      ["network", "Popular shows from CBS, NBC, ABC, and FOX", "Crime dramas, sitcoms, talk shows"],
+      ["localnews", "Local news and weather", ""],
+      ["cablenews", "National news channels", "Like CNN, Fox News, MSNBC"],
+      ["sports", "Live sports", "Football, baseball, college games"],
+      ["british", "British mysteries and dramas", "Like Midsomer Murders or Masterpiece"],
+      ["nature", "Nature, history, and documentaries", ""],
+      ["gameshows", "Game shows", ""],
+      ["newmovies", "Newer movies and popular series", ""],
+      ["family", "Shows to watch with grandkids", "Cartoons and family movies"],
+      ["faith", "Church services, music, and inspirational shows", ""]
+    ] },
+  { id: "style", multi: false, title: "How do you like to watch?",
+    opts: [
+      ["live", "Like regular TV", "Turn it on and flip through channels"],
+      ["demand", "Pick a show and watch it when I want", "Start any episode, any time"],
+      ["both", "A little of both", ""]
+    ] },
+  { id: "budget", multi: false, title: "How much would you like to spend each month?",
+    help: "This is the total for all services together.",
+    opts: [
+      ["0", "Nothing. Free only, please.", ""],
+      ["15", "Up to about $15 a month", ""],
+      ["40", "Up to about $40 a month", ""],
+      ["100", "Up to about $100 a month", "Close to what cable costs"]
+    ] },
+  { id: "ads", multi: false, title: "How do you feel about commercials?",
+    help: "Free services have commercials, like regular TV.",
+    opts: [
+      ["fine", "Commercials don't bother me", ""],
+      ["fewer", "I'd like fewer if I can", ""],
+      ["none", "I'd rather pay more to skip them", ""]
+    ] },
+  { id: "have", multi: true, title: "Do you already have any of these?",
+    help: "Some of these can save you money. Pick all that apply.",
+    opts: [
+      ["prime", "An Amazon Prime membership", "Free shipping on Amazon orders"],
+      ["library", "A public library card", ""],
+      ["shared", "A family member shares their account with me", "Like Netflix or Disney+"],
+      ["nohave", "None of these", ""]
+    ] },
+  { id: "comfort", multi: false, title: "How do you feel about setting up new technology?",
+    opts: [
+      ["low", "I'd like to keep it very simple", "We'll suggest just one or two services"],
+      ["mid", "I can do it with clear steps", ""],
+      ["high", "I'm comfortable trying new things", ""]
+    ] }
+];
+
+/* cost = monthly cost used for budget math. price = what we show. */
+const SERVICES = {
+  tubi: { name: "Tubi", free: true, cost: 0, price: "Free", site: "tubitv.com",
+    likes: { classic: 3, newmovies: 2, network: 1, family: 2, nature: 1, faith: 1, british: 1 }, live: 1, demand: 3, ads: true,
+    blurb: "Thousands of free movies and TV shows. Great for westerns, classic TV, and older movies.",
+    steps: ["Open the Tubi app.", "You can start watching right away. No account or payment is needed.", "Use the arrow buttons to scroll through categories like Westerns, Classic TV, and Comedy.", "Press OK on your remote to start a show. Commercials will play every so often, just like regular TV.", "Optional: choose Sign Up to make a free account so Tubi remembers your favorites."] },
+  pluto: { name: "Pluto TV", free: true, cost: 0, price: "Free", site: "pluto.tv",
+    likes: { classic: 3, gameshows: 3, cablenews: 1, localnews: 1, british: 1, nature: 1, network: 1, faith: 1 }, live: 3, demand: 1, ads: true,
+    blurb: "Feels the most like regular cable TV. It has a channel guide with hundreds of free channels, including classic shows, game shows, and news.",
+    steps: ["Open the Pluto TV app.", "No account or payment is needed.", "Choose Live TV. You will see a channel guide, just like cable.", "Press the up and down arrows to move through channels. Press OK to watch one.", "Choose On Demand if you'd like to pick a specific show to start from the beginning."] },
+  roku: { name: "The Roku Channel", free: true, cost: 0, price: "Free", site: "therokuchannel.com",
+    likes: { classic: 2, newmovies: 1, localnews: 2, cablenews: 1, family: 1, gameshows: 1 }, live: 3, demand: 2, ads: true,
+    blurb: "Free movies, shows, and live channels, including some local and national news. Built into every Roku, and it works on other devices too.",
+    steps: ["On a Roku, it's already on your Home screen. On other devices, install The Roku Channel app.", "No payment is needed.", "Choose Live TV to see a channel guide, or browse movies and shows.", "Press OK to start watching.", "Optional: sign in with a free Roku account to save your spot in shows."] },
+  pbs: { name: "PBS App", free: true, cost: 0, price: "Free", priceNote: "More shows with a $5/month donation (PBS Passport)", site: "pbs.org",
+    likes: { nature: 3, british: 3, family: 2, localnews: 1, faith: 0 }, live: 2, demand: 2, ads: false,
+    blurb: "Nature and history programs, Masterpiece dramas, and kids' shows, with no commercials.",
+    steps: ["Open the PBS app.", "When asked, choose your local station. In Southern Utah, that is usually PBS Utah.", "Browse shows or choose Live TV to watch your local PBS channel.", "No account is needed for many shows.", "Optional: if you donate $5 a month to your local station at pbs.org, you get PBS Passport, with many more episodes. Choose Sign In on the app and follow the code shown on the screen."] },
+  youtube: { name: "YouTube", free: true, cost: 0, price: "Free", site: "youtube.com",
+    likes: { faith: 3, nature: 2, classic: 1, gameshows: 1, family: 2, cablenews: 1 }, live: 1, demand: 3, ads: true,
+    blurb: "Videos on almost any topic. Great for church services, old music performances, how-to videos, and news clips.",
+    steps: ["Open the YouTube app.", "Choose the magnifying glass (Search) and type what you want, like the name of your church or a favorite singer.", "Press OK on a video to play it.", "Optional: sign in with a Google account (the same one used for Gmail) so you can save favorite channels. The TV will show a code. On your phone, go to youtube.com/activate and type in the code."] },
+  kanopy: { name: "Kanopy or Hoopla (library)", free: true, cost: 0, price: "Free with a library card", site: "kanopy.com or hoopladigital.com", needs: "library",
+    likes: { british: 2, nature: 2, classic: 2, newmovies: 1, family: 1 }, live: 0, demand: 3, ads: false,
+    blurb: "Many public libraries let you stream good movies and documentaries for free, with no commercials. You get a set number each month.",
+    steps: ["First, call or visit your library and ask, \"Do you offer Kanopy or Hoopla?\" If they do, keep going.", "On a phone or computer, go to kanopy.com (or hoopladigital.com).", "Choose Get Started, find your library, and type in your library card number and PIN.", "Create a login with your email and a password. Write it down.", "Open the app on your TV, choose Sign In, and follow the code shown on the screen.", "Most libraries give you a limited number of movies each month. The app shows how many you have left."] },
+  prime: { name: "Amazon Prime Video", free: false, cost: 9, price: "Included with Prime, or about $9/month alone", site: "amazon.com/mytv",
+    likes: { newmovies: 3, network: 1, british: 1, classic: 1, family: 1, sports: 1, nature: 1 }, live: 1, demand: 3, ads: true,
+    blurb: "Movies and popular shows. If you already pay for Amazon Prime, this comes with it at no extra cost.",
+    steps: ["Open the Prime Video app and choose Sign In.", "The TV will show a short code.", "On your phone or computer, go to amazon.com/mytv, sign in to Amazon, and type in the code.", "Your TV will connect in a few seconds.", "Look for the words \"Included with Prime.\" Anything that shows a price, like $3.99, costs extra to rent or buy. Skip those if you don't want extra charges.", "Prime Video shows a few commercials. Removing them costs about $3 more a month."] },
+  netflix: { name: "Netflix", free: false, cost: 9, price: "From about $9/month (with ads)", site: "netflix.com",
+    likes: { newmovies: 3, network: 1, nature: 2, family: 2, british: 1 }, live: 0, demand: 3, ads: true,
+    blurb: "The biggest collection of movies and series, plus excellent nature documentaries.",
+    steps: ["On a phone or computer, go to netflix.com and choose Get Started.", "Type your email and make a password. Write both down.", "Choose a plan. \"Standard with ads\" is the lowest price.", "Enter your payment card. You can cancel any time from the Account page.", "Open the Netflix app on your TV, choose Sign In, and type your email and password."] },
+  peacock: { name: "Peacock", free: false, cost: 11, price: "From about $11/month", site: "peacocktv.com",
+    likes: { network: 3, sports: 2, localnews: 1, classic: 1, gameshows: 1 }, live: 2, demand: 3, ads: true,
+    blurb: "NBC shows the day after they air, favorites like Law & Order, daytime soaps, and some big sports events.",
+    steps: ["On a phone or computer, go to peacocktv.com and choose Get Started.", "Choose a plan. Premium is the lower-price plan with commercials.", "Create an account with your email and a password. Write them down.", "Enter your payment card.", "Open the Peacock app on your TV, choose Sign In, and follow the code shown on the screen."] },
+  paramount: { name: "Paramount+", free: false, cost: 9, price: "From about $9/month", priceNote: "About $14/month for no commercials and your live local CBS station", site: "paramountplus.com",
+    likes: { network: 3, localnews: 2, gameshows: 2, sports: 1, family: 1 }, live: 2, demand: 3, ads: true,
+    blurb: "CBS shows like NCIS and 60 Minutes, plus game shows. The higher plan includes your local CBS channel live.",
+    steps: ["On a phone or computer, go to paramountplus.com and choose Try It Free or Get Started.", "Pick a plan. Choose the higher plan if you want your local CBS channel live.", "Create an account with your email and a password. Write them down.", "Enter your payment card. If there is a free trial, write down the date it ends.", "Open the Paramount+ app on your TV, choose Sign In, and follow the code shown on the screen."] },
+  disney: { name: "Disney+ and Hulu bundle", free: false, cost: 13, price: "About $13/month for both (with ads)", site: "disneyplus.com",
+    likes: { family: 3, network: 2, newmovies: 2, nature: 1 }, live: 0, demand: 3, ads: true,
+    blurb: "Hulu has ABC and FOX shows the day after they air. Disney+ is perfect for grandkids' visits.",
+    steps: ["On a phone or computer, go to disneyplus.com and look for the Disney+ and Hulu bundle.", "Create an account with your email and a password. Write them down.", "Enter your payment card.", "Install both the Disney+ app and the Hulu app on your TV.", "Open each app, choose Log In, and use the same email and password (or follow the code shown on screen)."] },
+  hbomax: { name: "HBO Max", free: false, cost: 11, price: "From about $11/month (with ads)", site: "hbomax.com",
+    likes: { classic: 3, newmovies: 2, nature: 1, family: 1 }, live: 0, demand: 3, ads: true,
+    blurb: "Includes a large collection of classic Hollywood films from Turner Classic Movies (TCM), plus popular series.",
+    steps: ["On a phone or computer, go to hbomax.com and choose Sign Up.", "Pick a plan. \"Basic with Ads\" is the lowest price.", "Create an account with your email and a password. Write them down.", "Enter your payment card.", "Open the HBO Max app on your TV, choose Sign In, and follow the code shown on the screen.", "To find old movies, search for \"TCM.\""] },
+  acorn: { name: "Acorn TV", free: false, cost: 10, price: "About $9 to $10/month", site: "acorn.tv",
+    likes: { british: 3, nature: 0 }, live: 0, demand: 3, ads: false,
+    blurb: "British mysteries and dramas like Midsomer Murders and Doc Martin, with no commercials.",
+    steps: ["On a phone or computer, go to acorn.tv and choose Start Free Trial or Sign Up.", "Create an account with your email and a password. Write them down.", "Enter your payment card. If there is a free trial, write down the date it ends.", "Open the Acorn TV app on your TV, choose Sign In, and type your email and password or follow the code on screen."] },
+  philo: { name: "Philo", free: false, cost: 33, price: "About $33/month", site: "philo.com", livetv: true,
+    likes: { classic: 1, gameshows: 3, nature: 2, faith: 1, family: 1 }, live: 3, demand: 2, ads: true,
+    blurb: "The lowest-cost way to get live cable channels like Hallmark, History, and Game Show Network. It does not include local news or sports.",
+    steps: ["On a phone or computer, go to philo.com and choose Start Free Trial.", "Type your phone number or email. Philo sends you a link to sign in, so there's no password to remember.", "Enter your payment card. Write down the date the free trial ends.", "Open the Philo app on your TV, choose Sign In, and follow the code shown on the screen.", "Choose Guide to see a channel list like cable. Press the star on a show to record it for later."] },
+  sling: { name: "Sling TV", free: false, cost: 46, price: "From about $46/month", site: "sling.com", livetv: true,
+    likes: { cablenews: 3, sports: 2, localnews: 1, network: 1, nature: 1 }, live: 3, demand: 1, ads: true,
+    blurb: "A lower-cost live TV service with cable news and sports channels. Sling Blue has more news. Sling Orange has ESPN.",
+    steps: ["On a phone or computer, go to sling.com.", "Choose a plan. Pick Blue for news channels or Orange for ESPN sports.", "Create an account with your email and a password. Write them down.", "Enter your payment card.", "Open the Sling app on your TV, choose Sign In, and type your email and password.", "Choose Guide to see channels like cable."] },
+  youtubetv: { name: "YouTube TV", free: false, cost: 83, price: "About $83/month", site: "tv.youtube.com", livetv: true,
+    likes: { localnews: 3, network: 3, cablenews: 3, sports: 3, nature: 1, gameshows: 1 }, live: 3, demand: 2, ads: true,
+    blurb: "The closest thing to cable. Your local channels, national news, and sports, with unlimited recording.",
+    steps: ["On a phone or computer, go to tv.youtube.com and choose Try It Free.", "Sign in with a Google account (the same one used for Gmail), or create one.", "Type your home ZIP code so you get your local channels.", "Enter your payment card. Write down the date the free trial ends.", "Open the YouTube TV app on your TV. It will show a code. On your phone, follow the website shown and type in the code.", "Choose Live to see a channel guide. Press the plus sign (+) on any show to record it."] }
+};
+
+const DEVICES = {
+  smarttv: { name: "Smart TV", steps: s => [
+    "Press the Home button on your TV remote. It often looks like a little house.",
+    "Find the app store. Depending on your TV, it is called Apps, Samsung Apps, LG Content Store, or Google Play.",
+    "Choose the magnifying glass to search.",
+    `Use the arrow buttons to spell out "${s}" and press OK.`,
+    "Choose the app, then choose Install or Add.",
+    "When it's done, the app will appear on your Home screen. Select it to open it."] },
+  roku: { name: "Roku", steps: s => [
+    "Press the Home button on your Roku remote. It looks like a little house.",
+    "Use the arrow buttons to go to Search on the left side.",
+    `Spell out "${s}" and select it from the list.`,
+    "Choose Add app (it may say Add channel) and press OK.",
+    "The new app will appear at the bottom of your Home screen. Select it to open it."] },
+  fire: { name: "Amazon Fire TV", steps: s => [
+    "Press and hold the blue microphone button on your remote.",
+    `While holding it, say "${s}" and then let go.`,
+    "Choose the app from the results, then choose Get or Download.",
+    "Choose Open when it's done. Next time, you'll find it in the Apps row on your Home screen.",
+    "Prefer to type? Choose Find (the magnifying glass) on the Home screen, then Search."] },
+  googletv: { name: "Google TV or Chromecast", steps: s => [
+    "Press the Google Assistant button on your remote (it has a colorful icon).",
+    `Say "Install ${s}."`,
+    "Choose Install.",
+    "Choose Open when it's done. It will also appear in the Apps row on your Home screen."] },
+  appletv: { name: "Apple TV box", steps: s => [
+    "Press the TV button on your Apple remote to go to the Home screen.",
+    "Open the App Store (a blue square with a white A).",
+    `Choose Search and spell out "${s}."`,
+    "Choose Get. It may ask for your Apple password.",
+    "The app will appear on your Home screen. Select it to open it."] },
+  tablet: { name: "Phone or tablet", steps: s => [
+    "On an iPhone or iPad, tap the App Store (a blue icon with a white A). On an Android phone or tablet, tap the Play Store (a colorful triangle).",
+    "Tap Search at the bottom or top of the screen.",
+    `Type "${s}" and tap the app when it appears.`,
+    "Tap Get or Install. It may ask for your password, face, or fingerprint.",
+    "Tap Open when it's done. The app will also appear on your home screen."] },
+  computer: { name: "Computer or laptop", steps: (s, site) => [
+    "No app is needed on a computer.",
+    "Open your web browser. This is the program you use for the internet, like Chrome, Edge, or Safari.",
+    `Click the address bar at the top and type ${site}, then press Enter.`,
+    "Tip: click the star in the address bar to bookmark the page so it's easy to find next time."] },
+  none: { name: "I don't have a device yet", steps: s => [
+    "You'll need a small streaming device that plugs into the back of your TV. A Roku Express or Amazon Fire TV Stick costs about $30 at most stores.",
+    "Plug it into an HDMI port on the back or side of your TV, and plug in its power cord.",
+    "Use your TV remote's Input or Source button to switch to that HDMI port.",
+    "Follow the setup on screen. It will ask you to connect to your home Wi-Fi, so have your Wi-Fi name and password ready.",
+    `Once it's set up, follow the Roku or Fire TV steps to add "${s}." Choose that device in the list above to see them.`] }
+};
+
+/* ---------- Free TV apps page ---------- */
+const FREE_CATS = [
+  ["all", "Show all"],
+  ["movies", "Movies & TV shows"],
+  ["live", "Live channels like cable"],
+  ["news", "National news & weather"],
+  ["local", "Utah local news"],
+  ["family", "Faith, family & learning"],
+  ["library", "Free with a library card"],
+  ["builtin", "Already on your TV"]
+];
+
+const NO_ACCT = "No account needed";
+const FREE_ACCT = "Free account with your email";
+const LIB = "Library card needed";
+const SIGNUP = [
+  "Choose Sign Up or Create Account.",
+  "Type your email address and make a password. Write both down and keep them somewhere safe.",
+  "It should never ask for a payment card. If it does, you may be on a paid plan page. Go back and look for the free option."
+];
+
+const FREE = [
+  { id: "tubi", name: "Tubi", cats: ["movies", "live", "news"], acct: NO_ACCT, site: "tubitv.com",
+    what: "Tens of thousands of free movies and TV shows, including westerns, classic TV, and a live news section.",
+    steps: ["Open the Tubi app.", "You can start watching right away.", "Scroll through rows like Westerns, Classic TV, and Comedy. Press OK to play.", "Choose Live at the top to see free news channels.", "Optional: make a free account so Tubi remembers your favorites."] },
+  { id: "pluto", name: "Pluto TV", cats: ["movies", "live", "news"], acct: NO_ACCT, site: "pluto.tv",
+    what: "Hundreds of free channels with a guide that looks like cable. Classic shows, game shows, and news.",
+    steps: ["Open the Pluto TV app.", "Choose Live TV. You'll see a channel guide, just like cable.", "Press the up and down arrows to move through channels. Press OK to watch.", "Choose On Demand to pick a specific show and start it from the beginning."] },
+  { id: "rokuch", name: "The Roku Channel", search: "The Roku Channel", cats: ["movies", "live", "news"], acct: "Optional free Roku account", site: "therokuchannel.com",
+    what: "Free movies, shows, and live channels, including local and national news. Built into every Roku and available on other devices.",
+    builtinOn: "roku", builtinText: "It's already on your Roku Home screen. Look for The Roku Channel near the top.",
+    steps: ["Open The Roku Channel.", "Choose Live TV to see a channel guide, or browse movies and shows.", "Press OK to start watching.", "Optional: sign in with a free Roku account to keep your place in shows."] },
+  { id: "youtube", name: "YouTube", cats: ["movies", "news", "family"], acct: "Optional free Google account", site: "youtube.com",
+    what: "Videos on almost any topic. Church services, old music performances, how-to videos, and news.",
+    steps: ["Open the YouTube app.", "Choose the magnifying glass (Search) and type what you'd like, such as your church's name or a favorite singer.", "Press OK on a video to play it.", "Optional: sign in with a Google account (the same one used for Gmail) to save favorite channels. The TV shows a code. On your phone, go to youtube.com/activate and type the code in."] },
+  { id: "sling", name: "Sling Freestream", search: "Sling TV", cats: ["live", "news", "movies"], acct: "Free account, no payment card", site: "sling.com",
+    what: "Hundreds of free live channels with a strong news and weather lineup, plus free movies and shows. It's inside the regular Sling app.",
+    steps: ["Open the Sling app.", "Look for Freestream or Watch Free. Do not choose a paid plan like Orange or Blue.", "If asked, create a free account with your email and a password. Write them down. No payment card is needed.", "Choose Guide to see the free channels and press OK on one to watch."] },
+  { id: "philo", name: "Philo Free Channels", search: "Philo", cats: ["live", "movies"], acct: "Free account, no payment card", site: "philo.com",
+    what: "More than 100 free live channels inside the Philo app, no payment card required.",
+    steps: ["Open the Philo app.", "Look for the free channels option. Skip the free trial of the paid plan unless you want it.", "Type your phone number or email. Philo sends a link to sign in, so there's no password to remember.", "Choose Guide to see the free channels."] },
+  { id: "xumo", name: "Xumo Play", cats: ["live", "movies"], acct: NO_ACCT, site: "play.xumo.com",
+    what: "Free live channels and movies, no sign-up needed.",
+    steps: ["Open the Xumo Play app.", "Choose Live Guide to flip through channels, or browse Movies and TV Shows.", "Press OK to watch. No account is needed."] },
+  { id: "plex", name: "Plex", cats: ["movies", "live"], acct: "Optional free account", site: "plex.tv",
+    what: "Free movies, shows, and live channels. Also helps you find where shows are streaming.",
+    steps: ["Open the Plex app.", "If it asks you to sign in, you can choose Skip or make a free account.", "Choose Live TV for channels, or Movies & Shows for on-demand titles.", "Press OK to watch."] },
+  { id: "primefree", name: "Prime Video (free with ads)", search: "Prime Video", cats: ["movies"], acct: "Free Amazon account", site: "amazon.com/mytv",
+    what: "Amazon's old Freevee app is gone. Its free movies and shows moved into the Prime Video app, and you don't need a Prime membership to watch them.",
+    steps: ["Open the Prime Video app and choose Sign In.", "The TV will show a short code. On your phone or computer, go to amazon.com/mytv, sign in to Amazon (or make a free account), and type the code.", "Look for titles marked \"Free with ads.\"", "Skip anything that says \"Start your free trial\" or shows a price. Those cost money."] },
+  { id: "fandango", name: "Fandango at Home (free section)", search: "Fandango at Home", cats: ["movies"], acct: FREE_ACCT, site: "fandangoathome.com",
+    what: "Formerly called Vudu. Mostly a rental store, but it has a section of free movies with ads.",
+    steps: ["Open the Fandango at Home app.", ...SIGNUP, "Choose the Free section at the top. Anything with a price costs money to rent or buy."] },
+  { id: "popcornflix", name: "Popcornflix", cats: ["movies"], acct: NO_ACCT, site: "popcornflix.com",
+    what: "Free movies with no sign-up required.",
+    steps: ["Open the Popcornflix app.", "Browse by category, like Comedy or Drama.", "Press OK to play. No account is needed."] },
+  { id: "shout", name: "Shout! Factory TV", cats: ["movies"], acct: NO_ACCT, site: "shoutfactorytv.com",
+    what: "Classic TV shows and cult favorite movies, organized into easy collections.",
+    steps: ["Open the Shout! Factory TV app.", "Browse collections of classic TV and movies.", "Press OK to play."] },
+  { id: "distro", name: "DistroTV", cats: ["live", "news"], acct: "Optional", site: "distro.tv",
+    what: "Quick-loading app with free live channels, including news and international channels.",
+    steps: ["Open the DistroTV app.", "Scroll through the channel list and press OK to watch.", "If it asks you to sign up, you can make a free account with your email."] },
+  { id: "mydtv", name: "MyFree DIRECTV", cats: ["live"], acct: "Free account, no payment card", site: "directv.com/myfree",
+    what: "Free live channels from DIRECTV. You don't need to be a DIRECTV customer.",
+    steps: ["Open the MyFree DIRECTV app.", ...SIGNUP, "Choose Guide and press OK on a channel to watch."] },
+
+  { id: "localnow", name: "Local Now", cats: ["news", "local", "live"], acct: FREE_ACCT, site: "localnow.com",
+    what: "Local news, weather, and free channels picked for your area.",
+    steps: ["Open the Local Now app.", "When asked, type your ZIP code so it shows news for your area.", "If asked, create a free account with your email.", "Choose Live to see the channel guide."] },
+  { id: "haystack", name: "Haystack News", cats: ["news", "local"], acct: NO_ACCT, site: "haystack.tv",
+    what: "News clips from hundreds of local and national sources, played one after another like a newscast.",
+    steps: ["Open the Haystack News app.", "Press OK to start. It plays news stories back to back.", "Press right to skip a story you're not interested in."] },
+  { id: "cbsnews", name: "CBS News 24/7", search: "CBS News", cats: ["news"], acct: NO_ACCT, site: "cbsnews.com",
+    what: "Free live national news around the clock, plus shows like 60 Minutes and CBS Mornings clips.",
+    steps: ["Open the CBS News app.", "The live stream usually starts right away. If not, choose Live or CBS News 24/7.", "No cable login is needed."] },
+  { id: "abcnews", name: "ABC News Live", search: "ABC News", cats: ["news"], acct: NO_ACCT, site: "abcnews.go.com",
+    what: "ABC's free 24-hour news stream.",
+    steps: ["Open the ABC News app.", "Choose ABC News Live to watch the live stream.", "No cable login is needed."] },
+  { id: "nbcnews", name: "NBC News NOW", search: "NBC News", cats: ["news"], acct: NO_ACCT, site: "nbcnews.com/now",
+    what: "NBC's free 24/7 news stream, plus TODAY and Dateline clips.",
+    steps: ["Open the NBC News app.", "Choose NBC News NOW to watch live.", "No cable login is needed."] },
+  { id: "livenow", name: "LiveNOW from FOX", cats: ["news"], acct: NO_ACCT, site: "livenowfox.com",
+    what: "FOX's free live news channel, showing big news events as they happen. (The regular Fox News Channel needs a cable login, so it isn't listed here.)",
+    steps: ["Open the LiveNOW from FOX app.", "The live stream starts on the home screen.", "No cable login is needed."] },
+  { id: "foxweather", name: "FOX Weather", cats: ["news"], acct: NO_ACCT, site: "foxweather.com",
+    what: "A free 24-hour weather channel with national and local forecasts.",
+    steps: ["Open the FOX Weather app.", "Choose Watch Live.", "On a phone, allow your location if you want your local forecast."] },
+  { id: "scripps", name: "Scripps News", cats: ["news"], acct: NO_ACCT, site: "scrippsnews.com",
+    what: "Free national news with a straightforward, less opinionated style.",
+    steps: ["Open the Scripps News app.", "Choose Watch Live.", "No account is needed."] },
+  { id: "bloomberg", name: "Bloomberg TV", search: "Bloomberg", cats: ["news"], acct: NO_ACCT, site: "bloomberg.com",
+    what: "Free live business and financial news.",
+    steps: ["Open the Bloomberg app.", "Choose Live TV or Watch.", "No account is needed to watch the live channel."] },
+  { id: "pbsnews", name: "PBS News Hour", search: "PBS", cats: ["news"], acct: NO_ACCT, site: "pbs.org/newshour",
+    what: "The nightly PBS News Hour, free inside the PBS app.",
+    steps: ["Open the PBS app.", "Search for News Hour.", "Pick the latest episode and press OK."] },
+
+  { id: "ksl", name: "KSL TV (NBC)", search: "KSL TV", cats: ["local"], acct: NO_ACCT, site: "ksltv.com", phoneFirst: true,
+    what: "Utah's NBC station. Free newscasts and live events, no cable required.",
+    steps: ["Open the KSL TV app.", "Choose Watch or Live to see newscasts.", "Allow notifications if you'd like breaking news and weather alerts."] },
+  { id: "kutv", name: "KUTV 2News (CBS)", search: "KUTV", cats: ["local"], acct: NO_ACCT, site: "kutv.com", phoneFirst: true,
+    what: "Utah's CBS station. Local news, weather, and live newscasts.",
+    steps: ["Open the KUTV app.", "Choose Watch or Live to see newscasts.", "Allow notifications for breaking news if you want them."] },
+  { id: "abc4", name: "ABC4 Utah", search: "ABC4 Utah", cats: ["local"], acct: NO_ACCT, site: "abc4.com", phoneFirst: true,
+    what: "Utah's ABC station. Local news and live newscasts.",
+    steps: ["Open the ABC4 Utah app.", "Choose Watch or Live.", "Allow notifications for breaking news if you want them."] },
+  { id: "fox13", name: "FOX 13 News Utah", search: "FOX 13 Utah", cats: ["local"], acct: NO_ACCT, site: "fox13now.com", phoneFirst: true,
+    what: "Utah's FOX station. Local news, weather, and live newscasts.",
+    steps: ["Open the FOX 13 News Utah app.", "Choose Watch or Live.", "Allow notifications for breaking news if you want them."] },
+
+  { id: "pbs", name: "PBS", cats: ["family", "movies"], acct: NO_ACCT, site: "pbs.org",
+    what: "Nature, history, Masterpiece dramas, and your local PBS station, with no commercials.",
+    steps: ["Open the PBS app.", "When asked, choose your local station. In Southern Utah that is usually PBS Utah.", "Browse shows, or choose Live TV to watch your local PBS channel.", "Optional: a $5/month donation to your station gets PBS Passport, with many more episodes. Choose Sign In and follow the code on screen."] },
+  { id: "pbskids", name: "PBS KIDS", cats: ["family"], acct: NO_ACCT, site: "pbskids.org",
+    what: "Free, safe shows for the grandkids, with no commercials.",
+    steps: ["Open the PBS KIDS app.", "Tap or select a show picture to play it.", "Choose Live TV to watch the PBS KIDS channel."] },
+  { id: "byutv", name: "BYUtv", cats: ["family", "movies"], acct: NO_ACCT, site: "byutv.org",
+    what: "Free family shows, faith programs, and BYU sports replays, made right here in Utah.",
+    steps: ["Open the BYUtv app.", "Browse shows or choose Live to watch the channel.", "No account is needed."] },
+  { id: "nasa", name: "NASA+", cats: ["family"], acct: NO_ACCT, site: "plus.nasa.gov",
+    what: "Free space documentaries and live rocket launches, with no commercials.",
+    steps: ["Open the NASA+ app, or go to plus.nasa.gov on a computer.", "Browse documentaries or choose Live to watch launches and events.", "No account is needed."] },
+  { id: "cfa", name: "Chick-fil-A Play", cats: ["family"], acct: FREE_ACCT, site: "chick-fil-a.com",
+    what: "Family-friendly shows and stories for kids, from the restaurant chain.",
+    steps: ["Open the Chick-fil-A Play app.", ...SIGNUP, "Browse shows and press play."] },
+
+  { id: "kanopy", name: "Kanopy", cats: ["library", "movies"], acct: LIB, site: "kanopy.com",
+    what: "Quality films, documentaries, and British shows with no commercials, free through many public libraries.",
+    steps: ["First, ask your library, \"Do you offer Kanopy?\"", "On a phone or computer, go to kanopy.com and choose Get Started.", "Find your library and type your library card number and PIN.", "Create a login with your email and a password. Write them down.", "Open Kanopy on your TV, choose Sign In, and follow the code on screen.", "Most libraries give you a set number of movies each month."] },
+  { id: "hoopla", name: "Hoopla", cats: ["library", "movies"], acct: LIB, site: "hoopladigital.com",
+    what: "Movies, TV shows, audiobooks, and music with no commercials, free with a library card.",
+    steps: ["First, ask your library, \"Do you offer Hoopla?\"", "On a phone or computer, go to hoopladigital.com and choose Get Started.", "Choose your library and type your library card number and PIN.", "Create a login with your email and a password. Write them down.", "Open Hoopla on your TV and sign in.", "Your library sets how many titles you can borrow each month."] },
+
+  { id: "samsung", name: "Samsung TV Plus", cats: ["builtin", "live", "news"], acct: NO_ACCT, site: "samsungtvplus.com", onlyOn: "Samsung TVs and Galaxy phones",
+    builtinText: "It comes built into Samsung smart TVs. Press Home on your remote and look for Samsung TV Plus, or press the channel buttons while on the Live TV input.",
+    what: "Hundreds of free channels built into Samsung TVs.",
+    steps: ["Select Samsung TV Plus on the Home screen.", "Use the channel up and down buttons to flip through channels.", "Press the Guide button to see what's on."] },
+  { id: "lg", name: "LG Channels", cats: ["builtin", "live"], acct: NO_ACCT, site: "lg.com", onlyOn: "LG TVs",
+    builtinText: "It comes built into LG smart TVs. Press Home and look for LG Channels.",
+    what: "Free live channels built into LG TVs.",
+    steps: ["Select LG Channels on the Home screen.", "Use the channel buttons to flip through channels.", "Press Guide to see what's on."] },
+  { id: "vizio", name: "VIZIO WatchFree+", cats: ["builtin", "live"], acct: NO_ACCT, site: "vizio.com", onlyOn: "VIZIO TVs",
+    builtinText: "It comes built into VIZIO smart TVs. Press the V button or Home and look for WatchFree+.",
+    what: "Free live channels built into VIZIO TVs.",
+    steps: ["Select WatchFree+.", "Use the channel buttons to change channels.", "Press Guide to see what's on."] },
+  { id: "firech", name: "Fire TV Channels", cats: ["builtin", "live", "news"], acct: "Your Fire TV's Amazon account", site: "amazon.com", onlyOn: "Amazon Fire TV devices",
+    builtinText: "It's built into Amazon Fire TV. Choose Live on the Home screen.",
+    what: "Free live channels built into Fire TV, including news.",
+    steps: ["On the Home screen, choose Live.", "Scroll to the free channels and press OK on one.", "You can also hold the microphone button and say \"Open Fire TV Channels.\""] },
+  { id: "freeplay", name: "Google TV Freeplay", cats: ["builtin", "live"], acct: "Your Google TV's Google account", site: "tv.google", onlyOn: "Google TV devices and TVs",
+    builtinText: "It's built into Google TV. Choose the Live tab at the top of the Home screen.",
+    what: "Free live channels built into Google TV devices.",
+    steps: ["On the Home screen, move to the Live tab at the top.", "Choose a free channel and press OK.", "Press the Guide or channel buttons to change channels."] }
+];
+
+function freeDeviceSteps(app, dev) {
+  const d = DEVICES[dev];
+  if (app.builtinOn === dev || app.cats.includes("builtin")) return [app.builtinText];
+  return d.steps(app.search || app.name, app.site);
+}
+
+function renderFree() {
+  const cat = state.freeCat || "all";
+  const dev = state.freeDev || (state.answers.device && state.answers.device[0]) || "smarttv";
+  state.freeDev = dev;
+  const list = FREE.filter(a => cat === "all" || a.cats.includes(cat));
+  const devOptions = Object.entries(DEVICES).map(([k, d]) => `<option value="${k}" ${k === dev ? "selected" : ""}>${esc(d.name)}</option>`).join("");
+  app.innerHTML = `
+    <section class="panel">
+      <h1 id="ftitle" tabindex="-1">Free to watch</h1>
+      <p class="lead">${FREE.length} free TV apps. None of them need a cable or satellite subscription, and none ask for a payment card. Tap any app to see how to set it up.</p>
+      <div>
+        <label class="devlabel" for="freedev">I'm setting up on:</label>
+        <select id="freedev">${devOptions}</select>
+      </div>
+    </section>
+    <section class="panel">
+      <h2 id="cathead">What kind of shows?</h2>
+      <div class="chips" role="group" aria-labelledby="cathead">
+        ${FREE_CATS.map(([v, l]) => `<button class="chip" id="cat-${v}" data-cat="${v}" aria-pressed="${v === cat}">${esc(l)}</button>`).join("")}
+      </div>
+    </section>
+    <p class="count muted">Showing ${list.length} app${list.length === 1 ? "" : "s"}</p>
+    <div class="setup">
+      ${list.map(a => `
+        <details class="freeapp" data-id="${a.id}">
+          <summary>
+            <span class="fa-head"><span class="fa-name">${esc(a.name)}</span>
+              <span class="fa-what">${esc(a.what)}</span>
+              <span class="fa-tags"><span class="tag free">Free</span><span class="tag acct">${esc(a.acct)}</span>${a.onlyOn ? `<span class="tag only">Only on ${esc(a.onlyOn)}</span>` : ""}</span>
+            </span>
+            <span class="chev" aria-hidden="true"></span>
+          </summary>
+          <div class="steps-body" data-body="${a.id}"></div>
+        </details>`).join("")}
+    </div>
+    <section class="contact">
+      <h2>Need a hand?</h2>
+      <p>We're happy to help with your internet or answer questions about getting set up.</p>
+      <p>Call InfoWest</p>
+      <p class="phone"><a href="tel:+14356740165">435-674-0165</a></p>
+      <p>Or visit <span class="web">infowest.com</span></p>
+    </section>`;
+
+  const fill = (el, a) => {
+    const d = DEVICES[state.freeDev];
+    const devSteps = freeDeviceSteps(a, state.freeDev);
+    const phoneNote = a.phoneFirst && !["tablet", "computer"].includes(state.freeDev)
+      ? `<div class="note"><strong>Good to know</strong><p>This station's app is made mainly for phones and tablets. Some stations also have a TV app, so try searching for it. You can also catch local newscasts on Local Now, Haystack News, or with an antenna.</p></div>` : "";
+    const onlyNote = a.onlyOn ? `<div class="note"><strong>Good to know</strong><p>This one is only on ${esc(a.onlyOn)}.</p></div>` : "";
+    el.innerHTML = `
+      ${onlyNote}${phoneNote}
+      <p class="phase">Part 1: Get it on your ${esc(d.name)}</p>
+      <ol class="steps">${devSteps.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol>
+      <p class="phase">Part 2: Start watching ${esc(a.name)}</p>
+      <ol class="steps">${a.steps.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol>
+      <p class="muted">Official website: <span class="web">${esc(a.site)}</span></p>`;
+  };
+  app.querySelectorAll("details.freeapp").forEach(det => {
+    det.addEventListener("toggle", () => {
+      if (det.open) fill(det.querySelector(".steps-body"), FREE.find(a => a.id === det.dataset.id));
+    });
+  });
+  document.getElementById("freedev").onchange = e => {
+    state.freeDev = e.target.value;
+    app.querySelectorAll("details.freeapp[open]").forEach(det => fill(det.querySelector(".steps-body"), FREE.find(a => a.id === det.dataset.id)));
+  };
+  app.querySelectorAll(".chip").forEach(c => c.onclick = () => { state.freeCat = c.dataset.cat; renderFree(); document.getElementById("cat-" + c.dataset.cat).focus(); });
+}
+
+const state = { step: -1, answers: {}, view: "quiz", freeCat: "all", freeDev: null };
+const app = document.getElementById("app");
+
+function esc(t) { return String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+
+function renderWelcome() {
+  app.innerHTML = `
+    <section class="panel">
+      <h1>Find the right TV streaming for you</h1>
+      <p class="lead">Streaming means watching TV shows and movies through your internet connection instead of cable or satellite. Some services are free. Others cost a monthly fee.</p>
+      <p>Answer 7 easy questions and we'll suggest the best choices for you, with simple setup steps.</p>
+      <ul class="facts">
+        <li>Takes about 2 minutes</li>
+        <li>You can pick more than one answer on some questions</li>
+        <li>You can go back and change any answer</li>
+      </ul>
+      <div class="row"><button class="btn btn-go" id="start">Let's get started</button></div>
+    </section>`;
+  document.getElementById("start").onclick = () => go(0);
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[state.step];
+  const sel = state.answers[q.id] || [];
+  const pct = Math.round((state.step) / QUESTIONS.length * 100);
+  app.innerHTML = `
+    <section class="panel">
+      <div class="progress">
+        <span class="progress-label">Question ${state.step + 1} of ${QUESTIONS.length}</span>
+        <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></div>
+      </div>
+      <h2 id="qtitle" tabindex="-1">${esc(q.title)}</h2>
+      ${q.multi ? '<span class="hint">Pick all that apply</span>' : '<span class="hint">Pick one</span>'}
+      ${q.help ? `<p class="muted">${esc(q.help)}</p>` : ""}
+      <div class="opts" role="group" aria-labelledby="qtitle">
+        ${q.opts.map(([v, label, sub]) => `
+          <button class="opt ${q.multi ? "multi" : "single"}" id="opt-${q.id}-${v}" data-v="${v}" aria-pressed="${sel.includes(v)}">
+            <span class="mark">${CHECK}</span>
+            <span><b>${esc(label)}</b>${sub ? `<small>${esc(sub)}</small>` : ""}</span>
+          </button>`).join("")}
+      </div>
+      <div class="row split">
+        <button class="btn btn-back" id="back">Back</button>
+        <button class="btn btn-go" id="next" ${sel.length ? "" : "disabled"}>${state.step === QUESTIONS.length - 1 ? "See my results" : "Next"}</button>
+      </div>
+    </section>`;
+  const exclusive = ["none", "nohave"];
+  app.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const v = b.dataset.v;
+    let cur = state.answers[q.id] || [];
+    if (!q.multi) cur = [v];
+    else if (cur.includes(v)) cur = cur.filter(x => x !== v);
+    else if (exclusive.includes(v)) cur = [v];
+    else cur = cur.filter(x => !exclusive.includes(x)).concat(v);
+    state.answers[q.id] = cur;
+    app.querySelectorAll(".opt").forEach(o => o.setAttribute("aria-pressed", cur.includes(o.dataset.v)));
+    document.getElementById("next").disabled = !cur.length;
+  });
+  document.getElementById("back").onclick = () => go(state.step - 1);
+  document.getElementById("next").onclick = () => go(state.step + 1);
+  document.getElementById("qtitle").focus({ preventScroll: true });
+}
+
+function recommend(a) {
+  const likes = a.likes || [];
+  const style = (a.style || ["both"])[0];
+  const budget = Number((a.budget || ["0"])[0]);
+  const ads = (a.ads || ["fine"])[0];
+  const have = a.have || [];
+  const comfort = (a.comfort || ["mid"])[0];
+  const maxPicks = { low: 2, mid: 3, high: 4 }[comfort];
+
+  const scored = Object.entries(SERVICES).map(([id, s]) => {
+    let score = 0; const why = [];
+    const labels = QUESTIONS[1].opts.reduce((m, [v, l]) => (m[v] = l, m), {});
+    likes.forEach(l => { const w = s.likes[l] || 0; score += w * 3; if (w >= 2) why.push(labels[l]); });
+    if (style === "live") score += s.live * 2;
+    else if (style === "demand") score += s.demand * 2;
+    else score += (s.live + s.demand);
+    if (ads === "none" && !s.ads) { score += 5; why.push("No commercials"); }
+    if (ads === "fewer" && !s.ads) score += 2;
+    if (ads === "none" && s.free && s.ads) score -= 4;
+    if (s.needs === "library") { if (have.includes("library")) { score += comfort === "low" ? 0 : 3; why.push("Free with your library card"); } else score -= 6; }
+    let cost = s.cost; let owned = false;
+    if (id === "prime" && have.includes("prime")) { cost = 0; owned = true; score += 10; why.unshift("You already pay for it with Amazon Prime"); }
+    if (s.livetv && style === "live") why.push("Works like regular TV with a channel guide");
+    if (s.free) why.push("Free, no payment needed");
+    return { id, s, score, why: [...new Set(why)].slice(0, 4), cost, owned };
+  }).filter(x => x.score > 0);
+
+  scored.sort((x, y) => y.score - x.score || x.cost - y.cost);
+
+  const picks = []; let total = 0;
+  // Always start with the best free option (or an already-owned one).
+  const bestFree = scored.find(x => x.cost === 0);
+  if (bestFree) picks.push(bestFree);
+  for (const x of scored) {
+    if (picks.length >= maxPicks) break;
+    if (picks.includes(x)) continue;
+    if (total + x.cost > budget) continue;
+    // Only one live TV service at a time.
+    if (x.s.livetv && picks.some(p => p.s.livetv)) continue;
+    picks.push(x); total += x.cost;
+  }
+  // Upgrade: if they want live local news or sports and can afford it, lead with YouTube TV.
+  if (budget >= 100 && (likes.includes("localnews") || likes.includes("sports")) && style !== "demand" && !picks.some(p => p.id === "youtubetv")) {
+    const yt = scored.find(x => x.id === "youtubetv");
+    if (yt) {
+      const others = picks.filter(p => !p.s.livetv);
+      let t = yt.cost; const keep = [];
+      for (const p of others) { if (keep.length < maxPicks - 1 && t + p.cost <= budget + 5) { keep.push(p); t += p.cost; } }
+      picks.length = 0; picks.push(yt, ...keep); total = t;
+    }
+  }
+  const alsos = scored.filter(x => !picks.includes(x) && x.cost <= Math.max(budget, 0) && !(x.s.livetv && picks.some(p => p.s.livetv))).slice(0, 3);
+  return { picks, total, alsos, likes, budget, have, devices: a.device || ["none"] };
+}
+
+function renderResults() {
+  const r = recommend(state.answers);
+  const devList = r.devices;
+  const firstDev = devList[0];
+  const devOptions = Object.entries(DEVICES).map(([k, d]) => `<option value="${k}" ${k === firstDev ? "selected" : ""}>${esc(d.name)}${devList.includes(k) ? " (yours)" : ""}</option>`).join("");
+
+  const pickCard = p => `
+    <article class="pick ${p.cost === 0 ? "free" : ""}">
+      <div class="pick-head">
+        <h3>${esc(p.s.name)}</h3>
+        <span>${p.owned ? '<span class="tag have">You already have this</span>' : p.s.free ? '<span class="tag free">Free</span>' : '<span class="tag paid">Paid</span>'}</span>
+      </div>
+      <div class="price">${esc(p.owned ? "Included with your Prime membership" : p.s.price)}</div>
+      ${p.s.priceNote ? `<p class="muted">${esc(p.s.priceNote)}</p>` : ""}
+      <p>${esc(p.s.blurb)}</p>
+      ${p.why.length ? `<ul class="why">${p.why.map(w => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}
+    </article>`;
+
+  const totalText = r.total === 0 ? "$0 a month" : `About $${r.total} a month`;
+  const shared = r.have.includes("shared");
+
+  app.innerHTML = `
+    <section class="panel">
+      <h1 id="rtitle" tabindex="-1">Your streaming picks</h1>
+      <p class="lead">Based on your answers, here ${r.picks.length === 1 ? "is the service" : `are the ${r.picks.length} services`} we think you'll enjoy most. Start with the first one. You can always add more later.</p>
+    </section>
+
+    <div class="picks">${r.picks.map(pickCard).join("")}</div>
+
+    <section class="total">
+      <h2>Your estimated monthly cost</h2>
+      <p class="big">${totalText}</p>
+      <p>${r.total === 0 ? "Everything above is free. You'll never be asked for a payment card." : "Paid services can be canceled any time from the service's website. Prices are approximate."}</p>
+    </section>
+
+    ${r.likes.includes("localnews") ? `
+    <div class="note"><strong>Tip for free local channels</strong>
+      <p>An indoor TV antenna (about $25 to $40) plugged into your TV can pick up local stations like KSL, KUTV, and ABC 4 for free, with no internet needed. Reception depends on where you live.</p></div>` : ""}
+    ${shared ? `
+    <div class="note"><strong>About shared accounts</strong>
+      <p>If family shares a Netflix account with you, ask them to sign you in. Netflix may ask them to add you as an "extra member" for a small monthly fee if you live in a different home.</p></div>` : ""}
+
+    <section class="panel setup">
+      <h2>Step-by-step setup</h2>
+      <p>First, choose the device you'll use. The steps below will change to match it.</p>
+      <div>
+        <label class="devlabel" for="devpick">I'm setting up on:</label>
+        <select id="devpick">${devOptions}</select>
+      </div>
+      <div class="note"><strong>Before you start</strong>
+        <p>Have a pen and paper ready to write down each email and password you create. Keep it somewhere safe, like a kitchen drawer.</p></div>
+      <div id="steplist" class="setup"></div>
+    </section>
+
+    ${r.alsos.length ? `
+    <section class="panel">
+      <h2>Other good choices</h2>
+      <p class="muted">These also fit your answers. Tap one to see its setup steps. They follow the device you picked above.</p>
+      <div id="alsolist" class="setup"></div>
+    </section>` : ""}
+
+    <section class="panel">
+      <h2>Want even more free TV?</h2>
+      <p>We've put together ${FREE.length} free apps for movies, live channels, national news, and Utah local news, each with setup steps.</p>
+      <div class="row"><button class="btn btn-go" id="gofree">See all free TV apps</button></div>
+    </section>
+
+    <section class="panel safety">
+      <h2>Stay safe while streaming</h2>
+      <ul class="facts">
+        <li>Streaming companies will never call you and ask for your password or payment. If someone calls asking, hang up.</li>
+        <li>Only sign up on the official websites listed above.</li>
+        <li>If you sign up for a free trial, write down the date it ends so you aren't charged unexpectedly.</li>
+        <li>Streaming works best with a good internet connection. If shows keep stopping to load, your internet may need a checkup.</li>
+      </ul>
+    </section>
+
+    <section class="contact">
+      <h2>Need a hand?</h2>
+      <p>We're happy to help with your internet or answer questions about getting set up.</p>
+      <p>Call InfoWest</p>
+      <p class="phone"><a href="tel:+14356740165">435-674-0165</a></p>
+      <p>Or visit <span class="web">infowest.com</span></p>
+    </section>
+
+    <div class="row split">
+      <button class="btn btn-back" id="change">Change my answers</button>
+      <button class="btn btn-go" id="restart">Start over</button>
+    </div>`;
+
+  const drawSteps = dev => {
+    const d = DEVICES[dev];
+    const block = (p, i, isAlso) => {
+      const appName = p.id === "kanopy" ? "Kanopy" : p.id === "disney" ? "Disney+" : p.s.name.replace("The Roku Channel", "The Roku Channel");
+      const site = p.s.site.split(" ")[0];
+      const skipInstall = p.id === "roku" && dev === "roku";
+      const devSteps = skipInstall ? ["The Roku Channel is already on your Roku Home screen. Nothing to install."] : d.steps(appName, site);
+      return `
+      <details ${i === 0 && !isAlso ? "open" : ""}>
+        <summary>${isAlso ? `<span class="fa-head"><span class="fa-name">${esc(p.s.name)}</span><span class="fa-what">${esc(p.s.free ? "Free" : p.s.price)}. ${esc(p.s.blurb)}</span></span>` : `<span>${esc(p.s.name)}</span>`}<span class="chev" aria-hidden="true"></span></summary>
+        <div class="steps-body">
+          <p class="phase">Part 1: Get the app on your ${esc(d.name)}</p>
+          <ol class="steps">${devSteps.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol>
+          <p class="phase">Part 2: Set up ${esc(p.s.name)}</p>
+          <ol class="steps">${p.s.steps.map(s => `<li><span>${esc(s)}</span></li>`).join("")}</ol>
+          <p class="muted">Official website: <span class="web">${esc(p.s.site)}</span></p>
+        </div>
+      </details>`;
+    };
+    document.getElementById("steplist").innerHTML = r.picks.map((p, i) => block(p, i, false)).join("");
+    const al = document.getElementById("alsolist");
+    if (al) al.innerHTML = r.alsos.map((p, i) => block(p, i, true)).join("");
+  };
+  const sel = document.getElementById("devpick");
+  sel.onchange = () => drawSteps(sel.value);
+  drawSteps(firstDev);
+  document.getElementById("change").onclick = () => go(0);
+  document.getElementById("gofree").onclick = () => setView("free");
+  document.getElementById("restart").onclick = () => { state.answers = {}; go(-1); };
+  document.getElementById("rtitle").focus({ preventScroll: true });
+}
+
+function setTabs() {
+  document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-current", t.dataset.view === state.view ? "page" : "false"));
+}
+function setView(v) {
+  state.view = v;
+  try { history.replaceState(null, "", v === "free" ? "#free" : "#quiz"); } catch (e) {}
+  setTabs();
+  if (v === "free") { renderFree(); window.scrollTo(0, 0); document.getElementById("ftitle").focus({ preventScroll: true }); }
+  else go(state.step);
+}
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => setView(t.dataset.view));
+
+function go(step) {
+  state.step = step;
+  state.view = "quiz"; setTabs();
+  if (step < 0) renderWelcome();
+  else if (step >= QUESTIONS.length) renderResults();
+  else renderQuestion();
+  window.scrollTo(0, 0);
+}
+if (location.hash === "#free") setView("free"); else go(-1);
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => { navigator.serviceWorker.register("sw.js").catch(() => {}); });
+}
+</script>
+</body></html>
